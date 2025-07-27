@@ -1,10 +1,10 @@
 // import React, { useState } from 'react';
-// import { 
-//   View, 
-//   Text, 
-//   TouchableOpacity, 
-//   ScrollView, 
-//   StyleSheet 
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   ScrollView,
+//   StyleSheet
 // } from 'react-native';
 
 // interface Alert {
@@ -62,19 +62,19 @@
 
 //   const getSeverityStyle = (severity: string) => {
 //     switch (severity) {
-//       case 'critical': 
-//         return { 
+//       case 'critical':
+//         return {
 //           container: styles.alertCritical,
 //           text: styles.textCritical
 //         };
-//       case 'warning': 
-//         return { 
+//       case 'warning':
+//         return {
 //           container: styles.alertWarning,
 //           text: styles.textWarning
 //         };
-//       case 'info': 
-//       default: 
-//         return { 
+//       case 'info':
+//       default:
+//         return {
 //           container: styles.alertSuccess,
 //           text: styles.textSuccess
 //         };
@@ -94,7 +94,7 @@
 //     const now = new Date();
 //     const diffMs = now.getTime() - timestamp.getTime();
 //     const diffMins = Math.floor(diffMs / 60000);
-    
+
 //     if (diffMins < 1) return 'Just now';
 //     if (diffMins < 60) return `${diffMins}m ago`;
 //     const diffHours = Math.floor(diffMins / 60);
@@ -103,8 +103,8 @@
 //   };
 
 //   const acknowledgeAlert = (alertId: string) => {
-//     setAlerts(prev => prev.map(alert => 
-//       alert.id === alertId 
+//     setAlerts(prev => prev.map(alert =>
+//       alert.id === alertId
 //         ? { ...alert, acknowledged: true }
 //         : alert
 //     ));
@@ -113,20 +113,20 @@
 //   return (
 //     <View style={styles.container}>
 //       <Text style={styles.title}>RECENT ALERTS</Text>
-      
-//       <ScrollView 
+
+//       <ScrollView
 //         style={styles.alertsContainer}
 //         contentContainerStyle={styles.alertsContent}
 //       >
 //         {alerts.map((alert) => {
 //           const severityStyle = getSeverityStyle(alert.severity);
-//           const alertStyle = alert.acknowledged 
-//             ? styles.alertAcknowledged 
+//           const alertStyle = alert.acknowledged
+//             ? styles.alertAcknowledged
 //             : severityStyle.container;
-            
+
 //           return (
-//             <View 
-//               key={alert.id} 
+//             <View
+//               key={alert.id}
 //               style={[styles.alertItem, alertStyle]}
 //             >
 //               <View style={styles.alertContent}>
@@ -145,7 +145,7 @@
 //                   {formatTime(alert.timestamp)}
 //                 </Text>
 //               </View>
-              
+
 //               {!alert.acknowledged && (
 //                 <TouchableOpacity
 //                   onPress={() => acknowledgeAlert(alert.id)}
@@ -158,7 +158,7 @@
 //           );
 //         })}
 //       </ScrollView>
-      
+
 //       <TouchableOpacity style={styles.viewAllButton}>
 //         <Text style={styles.viewAllText}>VIEW ALL ALERTS →</Text>
 //       </TouchableOpacity>
@@ -272,22 +272,20 @@
 
 // export default RecentAlerts;
 
-
-
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  ScrollView, 
-  StyleSheet,
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import {
   ActivityIndicator,
-  Dimensions
-} from 'react-native';
-import axios from 'axios';
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const API_LATEST = 'http://192.168.1.155:5000/api/notifications/latest';
-const API_ALL = 'http://192.168.1.155:5000/api/notifications/all';
+const API_LATEST = "https://arsonabackend.onrender.com/api/notifications/latest";
+const API_ALL = "https://arsonabackend.onrender.com/api/notifications/all";
 
 interface Alert {
   _id: string;
@@ -311,52 +309,49 @@ const RecentAlerts = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await axios.get(
-        showAll ? API_ALL : API_LATEST
-      );
+
+      const response = await axios.get(showAll ? API_ALL : API_LATEST);
 
       let alertsData = response.data;
-      
+
       if (response.data && response.data.data) {
         alertsData = response.data.data;
-      }
-      else if (!Array.isArray(alertsData)) {
+      } else if (!Array.isArray(alertsData)) {
         alertsData = [alertsData];
       }
 
       const processedAlerts = alertsData.map((alert: Alert) => ({
         ...alert,
-        acknowledged: false
+        acknowledged: false,
       }));
-      
+
       setAlerts(processedAlerts);
     } catch (err) {
-      console.error('Error fetching alerts:', err);
-      setError('Failed to load alerts. Please try again.');
+      console.error("Error fetching alerts:", err);
+      setError("Failed to load alerts. Please try again.");
       setAlerts([
         {
-          _id: '1',
-          message: '🚨 Alert: gas detected!',
-          botId: 'arsona-001',
+          _id: "1",
+          message: "🚨 Alert: gas detected!",
+          botId: "arsona-001",
           gas: 1315,
           flame: 0,
           temperature: 30,
-          flag: 'gas',
+          flag: "gas",
           timestamp: new Date().toISOString(),
-          acknowledged: false
+          acknowledged: false,
         },
         {
-          _id: '2',
-          message: '⚠️ Warning: flame detected',
-          botId: 'arsona-002',
+          _id: "2",
+          message: "⚠️ Warning: flame detected",
+          botId: "arsona-002",
           gas: 450,
           flame: 1,
           temperature: 42,
-          flag: 'flame',
+          flag: "flame",
           timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-          acknowledged: true
-        }
+          acknowledged: true,
+        },
       ]);
     } finally {
       setLoading(false);
@@ -364,42 +359,48 @@ const RecentAlerts = () => {
   };
 
   useEffect(() => {
-    fetchAlerts();
+    fetchAlerts(); // Fetch initially
+
+    const interval = setInterval(() => {
+      fetchAlerts();
+    }, 2000); // every 2 seconds
+
+    return () => clearInterval(interval); // cleanup on unmount
   }, [showAll]);
 
   const getSeverityStyle = (flag: string) => {
     switch (flag) {
-      case 'gas':
-      case 'flame': 
-        return { 
+      case "gas":
+      case "flame":
+        return {
           container: styles.alertCritical,
-          text: styles.textCritical
+          text: styles.textCritical,
         };
-      case 'high_temp': 
-        return { 
+      case "high_temp":
+        return {
           container: styles.alertWarning,
-          text: styles.textWarning
+          text: styles.textWarning,
         };
-      case 'system_normal': 
-      default: 
-        return { 
+      case "system_normal":
+      default:
+        return {
           container: styles.alertSuccess,
-          text: styles.textSuccess
+          text: styles.textSuccess,
         };
     }
   };
 
   const getSeverityIcon = (flag: string) => {
     switch (flag) {
-      case 'gas': 
-      case 'flame': 
-        return '🚨';
-      case 'high_temp': 
-        return '⚠️';
-      case 'system_normal': 
-        return '✅';
-      default: 
-        return 'ℹ️';
+      case "gas":
+      case "flame":
+        return "🚨";
+      case "high_temp":
+        return "⚠️";
+      case "system_normal":
+        return "✅";
+      default:
+        return "ℹ️";
     }
   };
 
@@ -408,8 +409,8 @@ const RecentAlerts = () => {
     const alertTime = new Date(timestamp);
     const diffMs = now.getTime() - alertTime.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return 'Just now';
+
+    if (diffMins < 1) return "Just now";
     if (diffMins < 60) return `${diffMins}m ago`;
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `${diffHours}h ago`;
@@ -418,13 +419,13 @@ const RecentAlerts = () => {
 
   const acknowledgeAlert = async (alertId: string) => {
     try {
-      setAlerts(prev => prev.map(alert => 
-        alert._id === alertId 
-          ? { ...alert, acknowledged: true }
-          : alert
-      ));
+      setAlerts((prev) =>
+        prev.map((alert) =>
+          alert._id === alertId ? { ...alert, acknowledged: true } : alert
+        )
+      );
     } catch (err) {
-      console.error('Error acknowledging alert:', err);
+      console.error("Error acknowledging alert:", err);
     }
   };
 
@@ -434,20 +435,25 @@ const RecentAlerts = () => {
 
   const getAlertType = (flag: string) => {
     switch (flag) {
-      case 'gas': return 'Gas Alert';
-      case 'flame': return 'Flame Alert';
-      case 'high_temp': return 'High Temperature';
-      case 'system_normal': return 'System Normal';
-      default: return 'System Notification';
+      case "gas":
+        return "Gas Alert";
+      case "flame":
+        return "Flame Alert";
+      case "high_temp":
+        return "High Temperature";
+      case "system_normal":
+        return "System Normal";
+      default:
+        return "System Notification";
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {showAll ? 'ALL ALERTS' : 'RECENT ALERTS'}
+        {showAll ? "ALL ALERTS" : "RECENT ALERTS"}
       </Text>
-      
+
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#FFA500" />
@@ -461,25 +467,22 @@ const RecentAlerts = () => {
         </View>
       ) : (
         <>
-          <ScrollView 
+          <ScrollView
             style={[
-              styles.alertsContainer, 
-              showAll && { maxHeight: Dimensions.get('window').height * 0.6 }
+              styles.alertsContainer,
+              showAll && { maxHeight: Dimensions.get("window").height * 0.6 },
             ]}
             contentContainerStyle={styles.alertsContent}
           >
             {alerts.length > 0 ? (
               alerts.map((alert) => {
                 const severityStyle = getSeverityStyle(alert.flag);
-                const alertStyle = alert.acknowledged 
-                  ? styles.alertAcknowledged 
+                const alertStyle = alert.acknowledged
+                  ? styles.alertAcknowledged
                   : severityStyle.container;
-                
+
                 return (
-                  <View 
-                    key={alert._id} 
-                    style={[styles.alertItem, alertStyle]}
-                  >
+                  <View key={alert._id} style={[styles.alertItem, alertStyle]}>
                     <View style={styles.alertContent}>
                       <View style={styles.alertHeader}>
                         <Text style={styles.alertIcon}>
@@ -489,17 +492,16 @@ const RecentAlerts = () => {
                           {getAlertType(alert.flag)}
                         </Text>
                       </View>
-                      <Text style={styles.alertMessage}>
-                        {alert.message}
-                      </Text>
+                      <Text style={styles.alertMessage}>{alert.message}</Text>
                       <Text style={styles.alertDetails}>
-                        {alert.botId} • Gas: {alert.gas}ppm • Temp: {alert.temperature}°C
+                        {alert.botId} • Gas: {alert.gas}ppm • Temp:{" "}
+                        {alert.temperature}°C
                       </Text>
                       <Text style={styles.alertTime}>
                         {formatTime(alert.timestamp)}
                       </Text>
                     </View>
-                    
+
                     {!alert.acknowledged && (
                       <TouchableOpacity
                         onPress={() => acknowledgeAlert(alert._id)}
@@ -515,13 +517,13 @@ const RecentAlerts = () => {
               <Text style={styles.noAlertsText}>No alerts found</Text>
             )}
           </ScrollView>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             onPress={toggleShowAll}
             style={styles.viewAllButton}
           >
             <Text style={styles.viewAllText}>
-              {showAll ? 'SHOW RECENT ALERTS' : 'VIEW ALL ALERTS →'}
+              {showAll ? "SHOW RECENT ALERTS" : "VIEW ALL ALERTS →"}
             </Text>
           </TouchableOpacity>
         </>
@@ -532,38 +534,38 @@ const RecentAlerts = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1A1A1A',
+    backgroundColor: "#1A1A1A",
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 165, 0, 0.2)',
+    borderColor: "rgba(255, 165, 0, 0.2)",
     marginVertical: 8,
   },
   title: {
     fontSize: 18,
-    fontFamily: 'monospace',
-    fontWeight: '600',
-    color: '#FFA500',
+    fontFamily: "monospace",
+    fontWeight: "600",
+    color: "#FFA500",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   loadingContainer: {
     height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorContainer: {
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   errorText: {
-    color: '#FF3333',
-    fontFamily: 'monospace',
+    color: "#FF3333",
+    fontFamily: "monospace",
     marginBottom: 8,
   },
   retryText: {
-    color: '#FFA500',
-    fontFamily: 'monospace',
+    color: "#FFA500",
+    fontFamily: "monospace",
   },
   alertsContainer: {
     maxHeight: 250,
@@ -572,9 +574,9 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   noAlertsText: {
-    color: '#AAAAAA',
-    fontFamily: 'monospace',
-    textAlign: 'center',
+    color: "#AAAAAA",
+    fontFamily: "monospace",
+    textAlign: "center",
     marginTop: 20,
   },
   alertItem: {
@@ -582,33 +584,33 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
     borderWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   alertAcknowledged: {
-    borderColor: 'rgba(255, 165, 0, 0.1)',
-    backgroundColor: 'rgba(30, 30, 36, 0.7)',
+    borderColor: "rgba(255, 165, 0, 0.1)",
+    backgroundColor: "rgba(30, 30, 36, 0.7)",
     opacity: 0.7,
   },
   alertCritical: {
-    borderColor: '#FF3333',
-    backgroundColor: 'rgba(255, 51, 51, 0.1)',
+    borderColor: "#FF3333",
+    backgroundColor: "rgba(255, 51, 51, 0.1)",
   },
   alertWarning: {
-    borderColor: '#FFCC00',
-    backgroundColor: 'rgba(255, 204, 0, 0.1)',
+    borderColor: "#FFCC00",
+    backgroundColor: "rgba(255, 204, 0, 0.1)",
   },
   alertSuccess: {
-    borderColor: '#00FF99',
-    backgroundColor: 'rgba(0, 255, 153, 0.1)',
+    borderColor: "#00FF99",
+    backgroundColor: "rgba(0, 255, 153, 0.1)",
   },
   alertContent: {
     flex: 1,
   },
   alertHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 4,
   },
   alertIcon: {
@@ -616,57 +618,57 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   alertType: {
-    fontFamily: 'monospace',
-    fontWeight: '500',
+    fontFamily: "monospace",
+    fontWeight: "500",
     fontSize: 14,
   },
   textCritical: {
-    color: '#FF3333',
+    color: "#FF3333",
   },
   textWarning: {
-    color: '#FFCC00',
+    color: "#FFCC00",
   },
   textSuccess: {
-    color: '#00FF99',
+    color: "#00FF99",
   },
   alertMessage: {
-    fontFamily: 'monospace',
+    fontFamily: "monospace",
     fontSize: 12,
-    color: '#CCCCCC',
+    color: "#CCCCCC",
     marginBottom: 2,
   },
   alertDetails: {
-    fontFamily: 'monospace',
+    fontFamily: "monospace",
     fontSize: 11,
-    color: '#AAAAAA',
+    color: "#AAAAAA",
     marginBottom: 2,
   },
   alertTime: {
-    fontFamily: 'monospace',
+    fontFamily: "monospace",
     fontSize: 11,
-    color: 'rgba(170, 170, 170, 0.7)',
+    color: "rgba(170, 170, 170, 0.7)",
   },
   ackButton: {
-    backgroundColor: 'rgba(255, 165, 0, 0.2)',
+    backgroundColor: "rgba(255, 165, 0, 0.2)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 4,
     marginLeft: 12,
   },
   ackButtonText: {
-    fontFamily: 'monospace',
+    fontFamily: "monospace",
     fontSize: 12,
-    color: '#FFA500',
+    color: "#FFA500",
   },
   viewAllButton: {
     marginTop: 12,
-    alignSelf: 'center',
+    alignSelf: "center",
     padding: 8,
   },
   viewAllText: {
-    fontFamily: 'monospace',
+    fontFamily: "monospace",
     fontSize: 14,
-    color: '#FFA500',
+    color: "#FFA500",
   },
 });
 

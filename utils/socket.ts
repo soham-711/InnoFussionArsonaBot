@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 // ⚠️ Use your local IP and make sure it's reachable from mobile
-const SOCKET_URL = 'http://192.168.1.155:5000';
+const SOCKET_URL = 'https://arsonabackend.onrender.com';
 
 export const useSensorSocket = () => {
   const [data, setData] = useState(null);

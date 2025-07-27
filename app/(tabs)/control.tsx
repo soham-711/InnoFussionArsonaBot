@@ -100,7 +100,7 @@ const RobotControl = () => {
               </TouchableOpacity>
               <View style={styles.emptyCell} />
             </View>
-            
+
             <View style={styles.movementRow}>
               <TouchableOpacity
                 style={styles.movementButton}
@@ -121,7 +121,7 @@ const RobotControl = () => {
                 <Text style={styles.movementIcon}>→</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.movementRow}>
               <View style={styles.emptyCell} />
               <TouchableOpacity
@@ -138,7 +138,7 @@ const RobotControl = () => {
         {/* Location Control */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>SEND TO LOCATION</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.locationSelector}
             onPress={() => setLocationModalVisible(true)}
           >
@@ -146,8 +146,8 @@ const RobotControl = () => {
               {selectedLocation || 'Select destination...'}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.actionButton, !selectedLocation && styles.disabledButton]} 
+          <TouchableOpacity
+            style={[styles.actionButton, !selectedLocation && styles.disabledButton]}
             onPress={handleNavigate}
             disabled={!selectedLocation}
           >
@@ -158,7 +158,7 @@ const RobotControl = () => {
         {/* Suppression Control */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>SUPPRESSION SYSTEM</Text>
-          
+
           <View style={styles.agentSelection}>
             <Text style={styles.agentLabel}>AGENT SELECTION:</Text>
             <View style={styles.agentGrid}>
@@ -217,11 +217,11 @@ const RobotControl = () => {
           <TouchableWithoutFeedback onPress={() => setLocationModalVisible(false)}>
             <View style={styles.modalOverlay} />
           </TouchableWithoutFeedback>
-          
+
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Select Destination</Text>
-              
+
               <ScrollView style={styles.modalScrollView}>
                 {locations.map((location) => (
                   <TouchableOpacity
@@ -241,15 +241,15 @@ const RobotControl = () => {
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-              
+
               <View style={styles.modalButtons}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.modalButton}
                   onPress={() => setLocationModalVisible(false)}
                 >
                   <Text style={styles.modalButtonText}>CANCEL</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={[styles.modalButton, styles.modalButtonPrimary]}
                   onPress={handleNavigate}
                   disabled={!selectedLocation}
@@ -547,3 +547,4 @@ const styles = StyleSheet.create({
 });
 
 export default RobotControl;
+
